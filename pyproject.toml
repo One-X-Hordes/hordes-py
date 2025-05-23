@@ -1,0 +1,56 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "hordes-py"
+requires-python = ">=3.9"
+dependencies = [
+    "aiohttp==3.9.1",
+    "yarl==1.18.3",
+    "aiodns==3.1.1; sys_platform=='linux' or sys_platform=='darwin'",
+    "aiofiles==24.1.0",
+    "pillow==10.4.0",
+    "cairosvg==2.7.1",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+dev = [
+    "isort==5.13.2",
+    "black==24.4.2",
+    "pyright>=1.1.401",
+    "pre-commit==3.7.1",
+    "typing_extensions~=4.12.2",
+]
+build = ["hatch"]
+
+[tool.hatch.version]
+path = "hordes/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["hordes/"]
+
+[tool.black]
+line-length = 125
+skip-string-normalization = true
+
+[tool.isort]
+profile = "black"
+combine_as_imports = true
+combine_star = true
+line_length = 125
+
+[tool.pyright]
+include = ["hordes"]
+exclude = ["**/__pycache__"]
+pythonVersion = "3.9"
+typeCheckingMode = "strict"
+reportMissingParameterType = "none"
+reportUnnecessaryIsInstance = "none"
+
+[tool.hatch.envs.hatch-test]
+default-args = ["tests"]
+
+[[tool.hatch.envs.hatch-test.matrix]]
+python = ["3.13", "3.12", "3.11", "3.10", "3.9"]
