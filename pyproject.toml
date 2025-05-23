@@ -10,7 +10,7 @@ dependencies = [
     "yarl==1.18.3",
     "aiodns==3.1.1; sys_platform=='linux' or sys_platform=='darwin'",
     "aiofiles==24.1.0",
-    "pillow==10.4.0",
+    "pillow==11.1.0",
     "cairosvg==2.7.1",
 ]
 dynamic = ["version"]
@@ -19,7 +19,7 @@ dynamic = ["version"]
 dev = [
     "isort==5.13.2",
     "black==24.4.2",
-    "pyright>=1.1.401",
+    "pyright==1.1.382",
     "pre-commit==3.7.1",
     "typing_extensions~=4.12.2",
 ]
@@ -48,6 +48,7 @@ pythonVersion = "3.9"
 typeCheckingMode = "strict"
 reportMissingParameterType = "none"
 reportUnnecessaryIsInstance = "none"
+useLibraryCodeForTypes = true
 
 [tool.hatch.envs.hatch-test]
 default-args = ["tests"]
