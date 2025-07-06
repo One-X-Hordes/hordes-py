@@ -1,5 +1,5 @@
 import math
-from typing import Any, Union
+from typing import Any, Iterable, Union
 
 __all__ = ('MISSING',)
 
@@ -24,7 +24,7 @@ MISSING: Any = _MissingSentinel()
 
 
 def math_round(x: Union[int, float]) -> int:
-    """`Math.round(x)` from javascript.
+    """Always rounds `x < .5` down and `x >= 0.5` up.
 
     Parameters
     ----------
@@ -43,3 +43,24 @@ def math_round(x: Union[int, float]) -> int:
         return floor_x
     else:
         return math.ceil(x)
+
+
+def iter_index(iterable: Iterable[float], value: float) -> int:
+    """
+
+    Parameters
+    ----------
+    iterable : Iterable[float]
+    value : float
+
+    Returns
+    -------
+    int
+        Index of iterable where `value` >= `iterable[index]` if exists. Otherwise -1.
+    """
+
+    for i, iv in enumerate(iterable):
+        if value >= iv:
+            return i
+
+    return -1

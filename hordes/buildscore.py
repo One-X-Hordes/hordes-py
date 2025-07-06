@@ -1,20 +1,21 @@
 from __future__ import annotations
 
 import math
-from typing import TYPE_CHECKING, TypedDict
+from typing import TYPE_CHECKING, NamedTuple
 
 if TYPE_CHECKING:
     from .stats import Stats
     from .types.character import ClassId
 
-    class Buildscore(TypedDict):
-        dps: float
-        burst: float
-        ehp: float
-        dps_score: float
-        tank_score: float
-        hybrid_score: float
-        overall_score: float
+
+class Buildscore(NamedTuple):
+    dps: float
+    burst: float
+    ehp: float
+    dps_score: float
+    tank_score: float
+    hybrid_score: float
+    overall_score: float
 
 
 def get_buildscore(stats: Stats, class_id: ClassId) -> Buildscore:
@@ -64,12 +65,12 @@ def get_buildscore(stats: Stats, class_id: ClassId) -> Buildscore:
         ) / 5
         overall_score = (dps_score / 1.75 + tank_score + hybrid_score) * 235 / 3
 
-    return {
-        'dps': dps,
-        'burst': burst,
-        'ehp': ehp,
-        'dps_score': dps_score,
-        'tank_score': tank_score,
-        'hybrid_score': hybrid_score,
-        'overall_score': overall_score,
-    }
+    return Buildscore(
+        dps=dps,
+        burst=burst,
+        ehp=ehp,
+        dps_score=dps_score,
+        tank_score=tank_score,
+        hybrid_score=hybrid_score,
+        overall_score=overall_score,
+    )

@@ -10,13 +10,13 @@ class Slots:
     _slots: dict[int, Union[Item, None]]
 
     def __init__(self) -> None:
-        self._slots = dict()
+        self._slots = dict({i: None for i in range(101, 112)})
 
     def __getitem__(self, key: int) -> Union[Item, None]:
         return self._slots.get(key, None)
 
     def __iter__(self):
-        return self._slots.__iter__()
+        return iter(self._slots.items())
 
 
 class SlotsProxy(Slots):

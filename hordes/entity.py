@@ -1,16 +1,17 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, MutableMapping, Optional, Union
 
 from .effects import Effect, Effects
 from .stats import MutableStats, StatsProxy
-from .utils import MISSING
+from .utils import MISSING, math_round
 
 if TYPE_CHECKING:
     from typing_extensions import Self
 
     from .types.character import FactionId
+
 
 # fmt: off
 __all__ = (
@@ -45,10 +46,20 @@ CONVERTABLE_STATS: dict[int, dict[int, Union[int, float]]] = {
 }
 
 
-def apply_converts(mapping: Union[dict[int, float], MutableStats], *converts: tuple[int, float, int]) -> None:
+def apply_converts(mapping: Union[MutableMapping[int, float], MutableStats], *converts: tuple[int, float, int]) -> None:
     for id, gain, gain_id in converts:
-        value = mapping.get(id, 0) if isinstance(mapping, dict) else mapping[id]
+        value = mapping.get(gain_id, 0) if isinstance(mapping, dict) else mapping[gain_id]
         mapping[gain_id] = value + mapping[id] * gain
+
+
+def convert(mapping: MutableStats) -> None:
+    mapping[6] += mapping[0] * 2 + mapping[1] * 4
+    mapping[7] += int(mapping[3] * 0.8) + math_round(mapping[4] * 0.8)
+    mapping[8] += mapping[0] * 0.3
+    mapping[12] += mapping[1] * 1
+    mapping[14] += int(mapping[2] * 0.5) + int(mapping[3] * 0.4) + math_round(mapping[5] * 0.2)
+    mapping[16] += math_round(mapping[4] * 0.3)
+    mapping[18] += mapping[5] * 0.4
 
 
 class EntityStats(MutableStats):
@@ -76,13 +87,6 @@ class EntityStats(MutableStats):
             if logic.convert:
                 apply_converts(self, *logic.convert)
 
-    def _round_stats(self) -> None:
-        self[7] = int(self[7] * 10) / 10
-        self[10] = int(self[10])
-        self[11] = round(self[11])
-        self[14] = int(self[14])
-        self[16] = round(self[16])
-
     def get_gains(self, id: int, amount: int) -> dict[int, float]:
         if not self.evaluated:
             raise  # Add proper error here
@@ -92,6 +96,7 @@ class EntityStats(MutableStats):
         if id in CONVERTABLE_STATS:
             for gain_id, gain in CONVERTABLE_STATS[id].items():
                 gains[gain_id] += gain * amount
+
         elif id == 30:  # Special case
             for key in (10, 11):
                 gains[key] = self._layers[1][key] * (1 + amount / 100)
@@ -107,9 +112,7 @@ class EntityStats(MutableStats):
     def evaluate(self, *, effects: Optional[Effects] = None) -> Self:
         self._effects = effects
 
-        for id, convert in CONVERTABLE_STATS.items():
-            for gain_id, gain in convert.items():
-                self[id] += self[gain_id] * gain
+        convert(self)
 
         if effects:
             self._apply_effects(effects)
@@ -119,7 +122,9 @@ class EntityStats(MutableStats):
         self[10] *= 1 + self[30] / 100
         self[11] *= 1 + self[30] / 100
 
-        self._round_stats()
+        self[10] = int(self[10])
+        self[11] = math_round(self[11])
+
         self.evaluated = True
         return self
 

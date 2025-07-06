@@ -26,15 +26,7 @@ repos:
         name: isort (python)
 
   - repo: https://github.com/RobertCraigie/pyright-python
-    rev: v1.1.382
+    rev: v1.1.402
     hooks:
       - id: pyright
-        additional_dependencies:
-          [
-            "aiohttp==3.9.1",
-            "yarl==1.18.3",
-            "aiodns==3.1.1",
-            "aiofiles==24.1.0",
-            "pillow==11.1.0",
-            "cairosvg==2.7.1",
-          ]
+        additional_dependencies: ["pillow==11.1.0", "cairosvg==2.7.1"]

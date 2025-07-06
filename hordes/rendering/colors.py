@@ -1,89 +1,105 @@
 from __future__ import annotations
 
-PURPLE_COLOR = (158, 59, 249)
-PURPLE_COLOR2 = (142, 39, 237)
-BLUE_COLOR = (6, 129, 234)
-GREEN_COLOR = (52, 203, 73)
-WHITE_COLOR = (255, 255, 255)
-GRAY_COLOR = (62, 72, 83)
-BLACK_COLOR = (16, 19, 29)
-YELLOW_COLOR = (245, 194, 71)
-ORANGE_COLOR = (216, 137, 0)
-RED_COLOR = (249, 48, 48)
+from dataclasses import asdict, dataclass
 
 
-class ColorPallete:
-    __slots__ = (
-        'elo',
-        'prestige',
-        'factions',
-        'classes',
-        'quality',
-        'stat_quality',
-        'tierlist_rank',
-        'viewgear_background',
-        'id',
-        'gs',
-        'bound',
-        'upgrade',
-        'percent',
-    )
-
-    def __init__(self):
-        for name in self.__slots__:
-            assert hasattr(self, name), f'Attribute \'{name}\' is missing.'
+@dataclass(frozen=True)
+class ColorScheme:
+    ELO: str
+    PRESTIGE: str
+    FACTIONS: tuple[str, ...]
+    CLASSES: tuple[str, ...]
+    ITEM_QUALITY: tuple[str, ...]
+    STAT_QUALITY: tuple[str, ...]
+    TIERLIST_RANK: tuple[str, ...]
 
 
-class DefaultPallete(ColorPallete):
-    elo = (215, 2, 235)
-    prestige = (234, 179, 121)
-
-    factions = ((58, 139, 217), (195, 41, 41))
-    classes = ((199, 150, 111), (24, 157, 225), (152, 206, 100), (79, 114, 212))
-
-    _quality_colors = (
-        (52, 203, 73),
-        (6, 129, 234),
-        (142, 39, 237),
-        (216, 137, 0),
-        (249, 48, 48),
-    )
-
-    quality = ((62, 72, 83),) + _quality_colors
-    stat_quality = ((255, 255, 255),) + _quality_colors
-
-    tierlist_rank = (
-        (116, 0, 0),
-        (185, 21, 21),
-        (198, 87, 70),
-        (198, 100, 70),
-        (198, 117, 70),
-        (198, 147, 70),
-        (198, 186, 70),
-        (184, 198, 70),
-        (129, 198, 70),
-        (70, 198, 97),
-        (70, 198, 149),
-        (70, 192, 198),
-        (70, 123, 198),
-        (90, 70, 198),
-        (159, 70, 198),
-        (198, 70, 160),
-        (174, 10, 139),
-    )
-
-    viewgear_background = (16, 19, 29)
-    id = (62, 72, 83)
-    gs = (52, 203, 73)
-    bound = (52, 203, 73)
-    upgrade = (245, 194, 71)
-    percent = (255, 255, 255)
+@dataclass(frozen=True)
+class ViewgearScheme(ColorScheme):
+    BACKGROUND: str
+    ID: str
+    GS: str
+    BOUND: str
+    UPGRADE: str
+    PERCENT: str
 
 
-DEFAULT_PALLETE = DefaultPallete()
+@dataclass(frozen=True)
+class PlayerstatsScheme(ColorScheme):
+    PRIMARY: str
+    OUTLINE: str
+    BACKGROUND: str
+    BACKGROUND_2: str
+    STAT_PRIMARY: str
+    STATPOINTS: str
+    STATBUTTON: str
+    STATBUTTON_DISABLED: str
+    UPGRADE: str
+    UPGRADE_BACKGROUND: str
+    TIERLIST: str
+
+    def get_row_name_color(self, key: str | int) -> str:
+        if key == 'rank' or isinstance(key, int) and key > 100:
+            return self.TIERLIST
+
+        return self.PRIMARY
 
 
-def get_quality(percent: int, *, extended: bool = True) -> int:
+DEFAULT_SCHEME = ColorScheme(
+    ELO="#D702EB",
+    PRESTIGE="#EAB379",
+    FACTIONS=("#3A8BD9", "#C32929"),
+    CLASSES=("#C7966F", "#189DE1", "#98CE64", "#4F72D4"),
+    ITEM_QUALITY=("#3E4853", "#34CB49", "#0681EA", "#8E27ED", "#D88900", "#F93030"),
+    STAT_QUALITY=("#FFFFFF", "#34CB49", "#0681EA", "#8E27ED", "#D88900", "#F93030"),
+    TIERLIST_RANK=(
+        '#AE0A8B',
+        '#C646A0',
+        '#9F46C6',
+        '#5A46C6',
+        '#467BC6',
+        '#46C0C6',
+        '#46C695',
+        '#46C661',
+        '#81C646',
+        '#B8C646',
+        '#C6BA46',
+        '#C69346',
+        '#C67546',
+        '#C66446',
+        '#C65746',
+        '#B91515',
+        '#740000',
+    ),
+)
+
+DEFAULT_VIEWGEAR_SCHEME = ViewgearScheme(
+    **asdict(DEFAULT_SCHEME),
+    BACKGROUND="#10131D",
+    ID="#3E4853",
+    GS="#34CB49",
+    BOUND="#34CB49",
+    UPGRADE="#F5C247",
+    PERCENT="#FFFFFF",
+)
+
+DEFAULT_PLAYERSTATS_SCHEME = PlayerstatsScheme(
+    **asdict(DEFAULT_SCHEME),
+    PRIMARY='#FFFFFF',
+    OUTLINE='#000000',
+    BACKGROUND='#181d24',
+    BACKGROUND_2='#12151e',
+    STAT_PRIMARY='#f5c247',
+    STATPOINTS='#34cb49',
+    STATBUTTON='#34cb49',
+    STATBUTTON_DISABLED='#5b858e',
+    UPGRADE='#dae8ea',
+    UPGRADE_BACKGROUND='#10131dcc',
+    TIERLIST='#1bffec',
+)
+
+
+def get_quality(percent: int | float, *, extended: bool = False) -> int:
     if percent >= 110 and extended:
         return 5
     elif percent >= 99 and extended:

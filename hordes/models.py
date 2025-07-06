@@ -52,6 +52,6 @@ class ItemModel(Protocol):
     stacks: IntOrNone
 
 
-class TierlistRanking(Protocol):
+class TierlistRanking(TypedDict):
     leaderboard: list[float]
     ranks: list[float]

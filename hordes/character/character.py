@@ -10,7 +10,7 @@ from ..utils import MISSING
 from .elo import Elo
 from .prestige import Prestige
 from .slots import MutableSlots, SlotsProxy
-from .statpoints import MutableStatpoints, StatpointsProxy
+from .statpoints import STATPOINTS_PER_LEVEL, MutableStatpoints, StatpointsProxy
 
 if TYPE_CHECKING:
     from typing_extensions import Self
@@ -94,10 +94,17 @@ class Character(Entity):
         self._statpoints.clear_statpoints()
         self._reload_stats()
 
-    def add_statpoints(self, data: Mapping[int, int], strict: bool = True) -> None:  # Add checks here
+    def add_statpoints(self, data: Mapping[int, int], *, strict: bool = True) -> None:
+        if strict and sum(data.values()) > self.statpoints_available:
+            raise ValueError(f'Attempted to assign {sum(data.values())} points while {self.statpoints_available} available')
+
         for id, value in data.items():
             self._statpoints.add_statpoints(id, value)
         self._reload_stats()
+
+    @property
+    def statpoints_available(self) -> int:
+        return int(self._stats[22])
 
     @property
     def slots(self) -> SlotsProxy:
@@ -120,7 +127,7 @@ class Character(Entity):
         self._reload_stats()
 
     def _set_stats(self, stats: EntityStats, *, tierlist: bool = False, **kwargs: Any) -> None:
-        super()._set_stats(stats, **kwargs)
+        super()._set_stats(stats, tierlist=tierlist, **kwargs)
 
         for id, value in DEFAULT_STATS.items():
             stats[id] += value
@@ -149,26 +156,31 @@ class Character(Entity):
             stats[id] += value
 
         # Additional
-        stats[22] = self.level * 3 - self._statpoints.used
+        stats[22] = self.level * STATPOINTS_PER_LEVEL - self._statpoints.used
         stats[25] = gearscore
+        stats[26] = min(45, max(self.level, (gearscore ** (5 / 6)) / 3.6))
 
     def _reload_stats(self, *, effects: Optional[Effects] = MISSING, tierlist: bool = False, **kwargs: Any) -> EntityStats:
         if not tierlist:
-            tierlist_stats = self._reload_stats(tierlist=True, effects=None)
-            overall_score = tierlist_stats[40]
+            tierlist_effects = Effects()
+            for effect in filter(lambda x: x.id - 61 == self.class_id, self.effects):
+                tierlist_effects.set_effect(effect)
+
+            tierlist_stats = self._reload_stats(tierlist=True, effects=tierlist_effects)
+            overall_score = tierlist_stats[107]
         else:
             overall_score = None
 
         stats = super()._reload_stats(effects=effects, tierlist=tierlist, **kwargs)
 
         buildscore = get_buildscore(stats, class_id=self.class_id)
-        stats[34] = buildscore['dps']
-        stats[35] = buildscore['burst']
-        stats[36] = buildscore['ehp']
-        stats[37] = buildscore['dps_score']
-        stats[38] = buildscore['tank_score']
-        stats[39] = buildscore['hybrid_score']
-        stats[40] = overall_score or buildscore['overall_score']
+        stats[101] = buildscore.dps
+        stats[102] = buildscore.burst
+        stats[103] = buildscore.ehp
+        stats[104] = buildscore.dps_score
+        stats[105] = buildscore.tank_score
+        stats[106] = buildscore.hybrid_score
+        stats[107] = overall_score or buildscore.overall_score
 
         return stats
 

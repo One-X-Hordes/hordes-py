@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 from typing import TYPE_CHECKING, Any, Callable, Generator, Optional, Union
 
 from .utils import MISSING
@@ -7,11 +8,11 @@ from .utils import MISSING
 if TYPE_CHECKING:
     from .stats import MutableStats
 
-
+# fmt: off
 __all__ = (
     'Effect',
-    'Effects',
 )
+# fmt: on
 
 
 class Effect:
@@ -72,12 +73,14 @@ class EffectLogic:
         id: int,
         unique: bool = False,
         passive: bool = False,
+        icon: Optional[str] = None,
         static: Optional[Callable[[Effect, MutableStats], Any]] = None,
         convert: Optional[tuple[tuple[int, float, int], ...]] = None,
     ):
         self.id = id
         self.unique = unique
         self.passive = passive
+        self.icon = icon
 
         self.static = static
         self.convert = convert
@@ -88,6 +91,7 @@ EffectsLogic = {
     for i in [
         EffectLogic(
             id=59,
+            icon='ui/skills/2',
             static=lambda effect, stats: (stats.add_stat(13, 300 + effect.level * 40)),
         ),
         EffectLogic(
@@ -98,18 +102,113 @@ EffectsLogic = {
         EffectLogic(
             id=62,
             passive=True,
+            convert=((3, 0.4, 10), (3, 0.4, 11)),
         ),
         EffectLogic(
             id=63,
             passive=True,
+            convert=((2, 0.4, 10), (2, 0.4, 11)),
         ),
         EffectLogic(
             id=64,
             passive=True,
+            convert=((4, 0.4, 10), (4, 0.4, 11)),
         ),
         EffectLogic(
             id=66,
+            icon='ui/skills/11',
             static=lambda effect, stats: (stats.add_stat(30, effect.level * 9)),
+        ),
+        EffectLogic(
+            id=71,
+            icon='ui/skills/16',
+            static=lambda effect, stats: (
+                stats.add_stat(16, 30 + effect.level * 70),
+                stats.add_stat(30, 2 + effect.level * 8),
+            ),
+        ),
+        EffectLogic(
+            id=72,
+            icon='ui/skills/17',
+            static=lambda effect, stats: (stats.add_stat(30, effect.level * 12)),
+        ),
+        EffectLogic(
+            id=75,
+            icon='ui/skills/19',
+            static=lambda effect, stats: (
+                stats.add_stat(10, effect.level * 3),
+                stats.add_stat(11, effect.level * 4),
+                stats.add_stat(6, effect.level * 50),
+            ),
+        ),
+        EffectLogic(
+            id=76,
+            icon='ui/skills/20',
+            static=lambda effect, stats: (
+                stats.add_stat(12, effect.level * 30),
+                stats.add_stat(9, effect.level * 22),
+            ),
+        ),
+        EffectLogic(
+            id=77,
+            icon='ui/skills/21',
+            static=lambda effect, stats: (
+                stats.add_stat(12, effect.level * 40),
+                stats.add_stat(31, effect.level * 200),
+            ),
+        ),
+        EffectLogic(
+            id=78,
+            icon='ui/skills/22',
+            static=lambda effect, stats: (stats.add_stat(14, effect.level * 30)),
+        ),
+        EffectLogic(
+            id=80,
+            icon='ui/skills/24',
+            static=lambda effect, stats: (
+                stats.add_stat(10, math.floor(2 + effect.level * 1.5)),
+                stats.add_stat(11, math.floor(3 + effect.level * 3.5)),
+            ),
+        ),
+        EffectLogic(
+            id=81,
+            icon='ui/skills/25',
+            static=lambda effect, stats: (stats.add_stat(16, effect.level * 30)),
+        ),
+        EffectLogic(
+            id=82,
+            icon='ui/skills/26',
+            static=lambda effect, stats: (stats.add_stat(14, effect.level * 30)),
+        ),
+        EffectLogic(
+            id=84,
+            icon='ui/skills/28',
+            static=lambda effect, stats: (stats.add_stat(16, 100 + effect.level * 60)),
+        ),
+        EffectLogic(
+            id=107,
+            icon='ui/skills/43',
+            static=lambda effect, stats: (stats.add_stat(16, (10 + effect.level * 20) * 5)),
+        ),
+        EffectLogic(
+            id=110,
+            icon='ui/skills/charm2',
+            static=lambda effect, stats: (stats.add_stat(30, 20)),
+        ),
+        EffectLogic(
+            id=135,
+            icon='items/charm/charm6_q1',
+            static=lambda effect, stats: (stats.add_stat(16, 150)),
+        ),
+        EffectLogic(
+            id=137,
+            icon='items/charm/charm7_q1',
+            static=lambda effect, stats: (stats.add_stat(30, 20)),
+        ),
+        EffectLogic(
+            id=145,
+            icon='items/charm/charm14_q1',
+            static=lambda effect, stats: (stats.add_stat(18, 110 if effect.level >= 2 else 10 if effect.level == 1 else 0)),
         ),
     ]
 }
