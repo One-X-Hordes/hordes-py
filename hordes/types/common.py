@@ -1,8 +1,6 @@
 from pathlib import Path
 from typing import Iterable, Protocol, TypeVar, Union
 
-from yarl import URL
-
 T = TypeVar("T")
 KT = TypeVar("KT")  # Key type.
 VT = TypeVar("VT")  # Value type.
@@ -14,7 +12,6 @@ StrOrNone = Union[str, None]
 IntOrNone = Union[int, None]
 
 StrPath = Union[str, Path]
-StrURL = Union[str, URL]
 
 
 class SupportsKeysAndGetItem(Protocol[KT, VT_co]):
