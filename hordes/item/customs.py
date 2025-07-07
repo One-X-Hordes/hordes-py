@@ -41,37 +41,37 @@ STAT_CODES = {
 
 STAT_IDS = dict([(name, id) for id, names in STAT_CODES.items() for name in names])
 
+ITEM_EXPRESSION = re.compile(r'(?P<type>[A-Za-z]+)(?P<percent>\d+)t(?P<tier>\d+)(?P<stats>(?:[A-Za-z]+\d+\.*\d){0,4})')
+STAT_EXPRESSION = re.compile(r'(?P<name>[A-Za-z]+)(?P<percent>\d+\.*\d)')
 
-# r'(?P<type>[A-Za-z]+)(?P<percent>\d+)t(?P<tier>\d+)(?P<stats>(?:[A-Za-z]+\d+\.*\d){0,4})' #TODO: Replace regex
+
 def parse_custom_item(input_string: str) -> ParsedCustomItem:
-    stat_names: list[str] = re.findall(r'[A-Za-z]+', input_string)
-    stat_percents: list[str] = re.findall(r'\d+', input_string)
-    item_type = stat_names[0].lower()
+    res = ITEM_EXPRESSION.search(input_string)
 
-    percent = int(stat_percents[0])
-    tier = int(stat_percents[1])
+    if not res:
+        raise ValueError('Invalid input string format')
+
+    item_type = res['type'].lower()
+    item_percent = int(res['percent'])
+    item_tier = int(res['tier'])
 
     stats: list[ItemRawStatDict] = []
 
-    starter = 2
-    index = starter
+    for match in STAT_EXPRESSION.finditer(res['stats']):
+        stat_name = match['name']
+        stat_percent = float(match['percent'])
 
-    while index < len(stat_names):
-        stat = stat_names[index]
-        if len(stat) > 1:
-            stat = stat.lower()
+        if len(stat_name) > 1:
+            stat_name = stat_name.lower()
 
-        if stat in STAT_IDS:
-            stat_id = STAT_IDS[stat]
-            stat_percent = float(stat_percents[index])
+        if stat_name in STAT_IDS:
+            stat_id = STAT_IDS[stat_name]
 
             stats.append({'id': stat_id, 'percent': stat_percent})
 
-        index += 1
-
     return {
-        'percent': percent,
-        'tier': tier,
+        'percent': item_percent,
+        'tier': item_tier,
         'type': item_type,
         'stats': stats,
     }
