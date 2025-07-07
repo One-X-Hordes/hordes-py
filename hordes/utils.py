@@ -1,7 +1,11 @@
 import math
 from typing import Any, Iterable, Union
 
-__all__ = ('MISSING',)
+# fmt: off
+__all__ = (
+    'MISSING',
+)
+# fmt: on
 
 
 class _MissingSentinel:

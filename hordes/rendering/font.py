@@ -5,7 +5,11 @@ from typing import Protocol, Union
 from PIL import ImageFont
 from PIL.ImageFont import FreeTypeFont
 
-__all__ = ('FontLoader',)
+# fmt: off
+__all__ = (
+    'FontLoader',
+)
+# fmt: on
 
 
 class FontLoaderP(Protocol):

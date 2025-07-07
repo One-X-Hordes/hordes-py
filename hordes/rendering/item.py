@@ -33,7 +33,11 @@ if TYPE_CHECKING:
         stats: tuple[ItemStatDict, ...]
 
 
-__all__ = ('ItemImage',)
+# fmt: off
+__all__ = (
+    'ItemImage',
+)
+# fmt: on
 
 IMAGE_SIZE = (244, 224)
 ERROR_ITEM: _RenderProps = {
