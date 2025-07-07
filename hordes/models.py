@@ -46,7 +46,7 @@ class ItemModel(Protocol):
     id: Optional[int]
     bound: BoundId
     type: ItemType
-    upgrade: int
+    upgrade: IntOrNone
     tier: int
     rolls: Union[Rolls, None]
     stacks: IntOrNone
