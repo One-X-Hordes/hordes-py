@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any, Mapping, Optional, TypedDict
 from PIL import Image
 
 from ..utils import math_round
-from .colors import DEFAULT_VIEWGEAR_SCHEME, ViewgearScheme, get_quality
+from .colors import DEFAULT_ITEM_SCHEME, ItemScheme, get_quality
 from .font import FontLoaderP
 from .formatters import format_bigint, format_stat
 from .layout import Indentation, Layout, Panel, create_panels
@@ -125,7 +125,7 @@ class ItemImage:
         self,
         loc: Mapping[str, Any],
         font_loader: FontLoaderP,
-        color_scheme: ViewgearScheme = DEFAULT_VIEWGEAR_SCHEME,
+        color_scheme: ItemScheme = DEFAULT_ITEM_SCHEME,
         error_item: _RenderProps = ERROR_ITEM,
         size_multiplier: int = 1,
     ):

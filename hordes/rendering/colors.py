@@ -15,7 +15,7 @@ class ColorScheme:
 
 
 @dataclass(frozen=True)
-class ViewgearScheme(ColorScheme):
+class ItemScheme(ColorScheme):
     BACKGROUND: str
     ID: str
     GS: str
@@ -25,7 +25,7 @@ class ViewgearScheme(ColorScheme):
 
 
 @dataclass(frozen=True)
-class PlayerstatsScheme(ColorScheme):
+class CharacterScheme(ColorScheme):
     PRIMARY: str
     OUTLINE: str
     BACKGROUND: str
@@ -73,7 +73,7 @@ DEFAULT_SCHEME = ColorScheme(
     ),
 )
 
-DEFAULT_VIEWGEAR_SCHEME = ViewgearScheme(
+DEFAULT_ITEM_SCHEME = ItemScheme(
     **asdict(DEFAULT_SCHEME),
     BACKGROUND="#10131D",
     ID="#3E4853",
@@ -83,7 +83,7 @@ DEFAULT_VIEWGEAR_SCHEME = ViewgearScheme(
     PERCENT="#FFFFFF",
 )
 
-DEFAULT_PLAYERSTATS_SCHEME = PlayerstatsScheme(
+DEFAULT_CHARACTER_SCHEME = CharacterScheme(
     **asdict(DEFAULT_SCHEME),
     PRIMARY='#FFFFFF',
     OUTLINE='#000000',

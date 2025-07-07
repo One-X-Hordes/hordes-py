@@ -10,7 +10,7 @@ from ..item import Item
 from ..models import TierlistRanking
 from ..utils import iter_index, math_round
 from .assets import AssetLoaderP
-from .colors import DEFAULT_PLAYERSTATS_SCHEME, PlayerstatsScheme, get_quality
+from .colors import DEFAULT_CHARACTER_SCHEME, CharacterScheme, get_quality
 from .font import FontLoaderP
 from .formatters import format_bigint, format_stat
 from .layout import Gap, Grid, GridColumns, Indentation, Layout, Panel, Rectangle, create_panels, pad_bbox
@@ -133,7 +133,7 @@ class CharacterImage:
         loc: Mapping[str, Any],
         loader: AssetLoaderP,
         font_loader: FontLoaderP,
-        color_scheme: PlayerstatsScheme = DEFAULT_PLAYERSTATS_SCHEME,
+        color_scheme: CharacterScheme = DEFAULT_CHARACTER_SCHEME,
         ranking: Optional[TierlistRanking] = None,
     ) -> None:
         self.background = background
@@ -149,7 +149,7 @@ class CharacterImage:
     def render_background(
         loc: Mapping[str, Any],
         font_loader: FontLoaderP,
-        color_scheme: PlayerstatsScheme = DEFAULT_PLAYERSTATS_SCHEME,
+        color_scheme: CharacterScheme = DEFAULT_CHARACTER_SCHEME,
         rank: bool = False,
         buildscore: bool = False,
     ) -> BytesIO:
