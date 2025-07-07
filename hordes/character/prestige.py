@@ -2,12 +2,11 @@ from ..stats import MutableStats
 
 # fmt: off
 __all__ = (
-    'Prestige',
+    'PRESTIGE_RANKS',
 )
 # fmt: on
 
 PRESTIGE_RANKS = (0, 4000, 8000, 12000, 16000, 20000, 24000, 28000, 32000, 36000, 40000, 44000, 48000)
-MAX_PRESTIGE_RANK = len(PRESTIGE_RANKS)
 
 PRESTIGE_BUFFS: tuple[tuple[tuple[int, int], ...], ...] = (
     ((15, 5),),

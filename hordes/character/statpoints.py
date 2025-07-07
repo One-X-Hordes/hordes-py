@@ -1,8 +1,8 @@
 from typing import Iterator, SupportsIndex
 
 __all__ = (
-    'MutableStatpoints',
-    'StatpointsProxy',
+    'STATPOINTS_PER_LEVEL',
+    'STATPOINTS_ID_RANGE',
 )
 
 STATPOINTS_PER_LEVEL = 3

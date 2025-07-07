@@ -2,6 +2,15 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 
+__all__ = (
+    'ColorScheme',
+    'ItemScheme',
+    'CharacterScheme',
+    'DEFAULT_SCHEME',
+    'DEFAULT_ITEM_SCHEME',
+    'DEFAULT_CHARACTER_SCHEME',
+)
+
 
 @dataclass(frozen=True)
 class ColorScheme:

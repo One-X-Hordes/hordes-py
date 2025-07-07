@@ -1,11 +1,10 @@
 # fmt: off
 __all__ = (
-    'Elo',
+    'ELO_RANKS',
 )
 # fmt: on
 
 ELO_RANKS = (0, 1600, 1800, 2000, 2200)
-MAX_ELO_RANK = len(ELO_RANKS)
 
 
 def get_elo_rank(value: int, /) -> int:

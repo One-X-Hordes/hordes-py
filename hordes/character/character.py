@@ -21,6 +21,8 @@ if TYPE_CHECKING:
 # fmt: off
 __all__ = (
     'Character',
+    'BLOODLINES',
+    'EQUIP_SLOT_IDS',
 )
 # fmt: on
 
