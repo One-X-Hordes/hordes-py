@@ -19,6 +19,9 @@ class Statpoints:
     def used(self) -> int:
         return sum(self._statpoints)
 
+    def to_dict(self) -> dict[int, int]:
+        return {id: value for id, value in self}
+
     def __getitem__(self, key: SupportsIndex) -> int:
         return self._statpoints[key]
 
