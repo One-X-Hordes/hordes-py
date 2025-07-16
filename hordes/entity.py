@@ -77,6 +77,9 @@ class EntityStats(MutableStats):
 
     def _apply_effects(self, effects: Effects) -> None:
         for effect in effects:
+            if effect.active is not True:
+                continue
+
             logic = effect.logic
 
             # Static

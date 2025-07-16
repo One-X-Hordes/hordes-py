@@ -24,6 +24,9 @@ class Effect:
         self.stacks = stacks
         self.caster = caster
 
+        self.active = True
+        self.unique_instances = 0
+
         self.logic = EffectsLogic[id]
 
 
@@ -48,6 +51,20 @@ class Effects:
 
         if len(effect_dict) == 0:
             self._effects.__delitem__(id)
+
+    def update_unique(self, id: int) -> None:
+        effect_dict = self._effects[id]
+
+        if effect_dict:
+            current: Effect | None = None
+            for effect in effect_dict.values():
+                if not current or effect.level > current.level:
+                    current = effect
+
+                effect.active = False
+                effect.unique_instances = len(effect_dict)
+            if current:
+                current.active = True
 
     def clear_effects(self) -> None:
         for effect_dict in self._effects.values():
@@ -134,6 +151,7 @@ EffectsLogic = {
         ),
         EffectLogic(
             id=75,
+            unique=True,
             icon='ui/skills/19',
             static=lambda effect, stats: (
                 stats.add_stat(10, effect.level * 3),
@@ -143,6 +161,7 @@ EffectsLogic = {
         ),
         EffectLogic(
             id=76,
+            unique=True,
             icon='ui/skills/20',
             static=lambda effect, stats: (
                 stats.add_stat(12, effect.level * 30),
@@ -159,11 +178,13 @@ EffectsLogic = {
         ),
         EffectLogic(
             id=78,
+            unique=True,
             icon='ui/skills/22',
             static=lambda effect, stats: (stats.add_stat(14, effect.level * 30)),
         ),
         EffectLogic(
             id=80,
+            unique=True,
             icon='ui/skills/24',
             static=lambda effect, stats: (
                 stats.add_stat(10, math.floor(2 + effect.level * 1.5)),
@@ -172,6 +193,7 @@ EffectsLogic = {
         ),
         EffectLogic(
             id=81,
+            unique=True,
             icon='ui/skills/25',
             static=lambda effect, stats: (stats.add_stat(16, effect.level * 30)),
         ),
@@ -182,6 +204,7 @@ EffectsLogic = {
         ),
         EffectLogic(
             id=84,
+            unique=True,
             icon='ui/skills/28',
             static=lambda effect, stats: (stats.add_stat(16, 100 + effect.level * 60)),
         ),
