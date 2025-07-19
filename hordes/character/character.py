@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Mapping, Optional
 
 from ..buildscore import get_buildscore
+from ..data import CHARACTER_BLOODLINES, EQUIP_SLOT_IDS, STATPOINTS_PER_LEVEL
 from ..effects import Effect, Effects
 from ..entity import Entity, EntityStats
 from ..item import Item
@@ -10,7 +11,7 @@ from ..utils import MISSING
 from .elo import Elo
 from .prestige import Prestige
 from .slots import MutableSlots, SlotsProxy
-from .statpoints import STATPOINTS_PER_LEVEL, MutableStatpoints, StatpointsProxy
+from .statpoints import MutableStatpoints, StatpointsProxy
 
 if TYPE_CHECKING:
     from typing_extensions import Self
@@ -21,12 +22,9 @@ if TYPE_CHECKING:
 # fmt: off
 __all__ = (
     'Character',
-    'BLOODLINES',
-    'EQUIP_SLOT_IDS',
 )
 # fmt: on
 
-BLOODLINES = (0, 3, 2, 4)
 
 DEFAULT_STATS = {
     0: 10,
@@ -45,8 +43,6 @@ DEFAULT_STATS = {
     17: 10,
     19: 15,
 }
-
-EQUIP_SLOT_IDS = frozenset({101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111})
 
 
 class Character(Entity):
@@ -139,7 +135,7 @@ class Character(Entity):
         # Stats from level
         stats[1] += 2 * self.level
         stats[6] += 8 * self.level
-        stats[BLOODLINES[self.class_id]] += self.level
+        stats[CHARACTER_BLOODLINES[self.class_id]] += self.level
 
         # Prestige
         stats += prestige.get_stats()

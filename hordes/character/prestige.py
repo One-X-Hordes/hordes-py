@@ -1,12 +1,7 @@
+from ..data import PRESTIGE_RANKS
 from ..stats import MutableStats
 
-# fmt: off
-__all__ = (
-    'PRESTIGE_RANKS',
-)
-# fmt: on
-
-PRESTIGE_RANKS = (0, 4000, 8000, 12000, 16000, 20000, 24000, 28000, 32000, 36000, 40000, 44000, 48000)
+__all__ = ()
 
 PRESTIGE_BUFFS: tuple[tuple[tuple[int, int], ...], ...] = (
     ((15, 5),),

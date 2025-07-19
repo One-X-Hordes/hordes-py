@@ -1,10 +1,6 @@
-# fmt: off
-__all__ = (
-    'ELO_RANKS',
-)
-# fmt: on
+from ..data import ELO_RANKS
 
-ELO_RANKS = (0, 1600, 1800, 2000, 2200)
+__all__ = ()
 
 
 def get_elo_rank(value: int, /) -> int:

@@ -5,7 +5,7 @@ from typing import Any, Mapping, Optional
 from PIL import Image, ImageOps
 
 from ..character import Character
-from ..character.character import EQUIP_SLOT_IDS
+from ..data import EQUIP_SLOT_IDS
 from ..item import Item
 from ..models import TierlistRanking
 from ..utils import iter_index, math_round

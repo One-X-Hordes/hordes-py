@@ -2,15 +2,19 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Union
 
+from ..data import EQUIP_SLOT_IDS
+
 if TYPE_CHECKING:
     from ..item import Item
+
+__all__ = ()
 
 
 class Slots:
     _slots: dict[int, Union[Item, None]]
 
     def __init__(self) -> None:
-        self._slots = dict({i: None for i in range(101, 112)})
+        self._slots = dict({i: None for i in EQUIP_SLOT_IDS})
 
     def __getitem__(self, key: int) -> Union[Item, None]:
         return self._slots.get(key, None)

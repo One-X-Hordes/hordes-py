@@ -1,12 +1,8 @@
 from typing import Iterator, SupportsIndex
 
-__all__ = (
-    'STATPOINTS_PER_LEVEL',
-    'STATPOINTS_ID_RANGE',
-)
+from ..data import STATPOINTS_ID_RANGE
 
-STATPOINTS_PER_LEVEL = 3
-STATPOINTS_ID_RANGE = 6
+__all__ = ()
 
 
 class Statpoints:
