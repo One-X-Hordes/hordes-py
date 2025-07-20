@@ -68,3 +68,39 @@ def iter_index(iterable: Iterable[float], value: float) -> int:
             return i
 
     return -1
+
+
+def get_attr_or_item(obj: Any, name: Union[str, int]) -> Any:
+    """
+    Retrieve an attribute or item from an object.
+
+    Parameters
+    ----------
+    obj : Any
+        The object to retrieve from.
+    name : Union[str, int]
+        The attribute name or item key/index.
+
+    Returns
+    -------
+    Any
+        The value of the attribute or item retrieved.
+
+    Raises
+    ------
+    AttributeError
+        If attribute access fails and item access is not attempted or fails.
+    KeyError, IndexError, TypeError
+        If item access fails.
+    """
+
+    if isinstance(name, str):
+        try:
+            return getattr(obj, name)
+        except AttributeError:
+            pass
+
+    try:
+        return obj[name]
+    except Exception as error:
+        raise type(error)(f"Failed to get attribute or item '{name}': {error}") from error

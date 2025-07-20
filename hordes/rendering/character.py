@@ -7,8 +7,9 @@ from PIL import Image, ImageOps
 from ..character import Character
 from ..data import EQUIP_SLOT_IDS
 from ..item import Item
-from ..models import TierlistRanking
-from ..utils import iter_index, math_round
+from ..models import Ranking
+from ..tierlist import get_leaderboard_rank, get_tierlist_rank
+from ..utils import math_round
 from .assets import AssetLoaderP
 from .colors import DEFAULT_CHARACTER_SCHEME, CharacterScheme, get_quality
 from .font import FontLoaderP
@@ -134,7 +135,7 @@ class CharacterImage:
         loader: AssetLoaderP,
         font_loader: FontLoaderP,
         color_scheme: CharacterScheme = DEFAULT_CHARACTER_SCHEME,
-        ranking: Optional[TierlistRanking] = None,
+        ranking: Optional[Ranking] = None,
     ) -> None:
         self.background = background
         self.loader = loader
@@ -381,10 +382,10 @@ class CharacterImage:
 
             # Ranks
             if self.ranking and rank:
-                rank_id = iter_index(self.ranking['ranks'], stats[107])
+                rank_id = get_tierlist_rank(self.ranking, stats[107])
                 text = get_tierlist_rank_name(rank_id)
                 if rank_id in range(2):
-                    leaderboard_position = iter_index(self.ranking['leaderboard'], stats[107])
+                    leaderboard_position = get_leaderboard_rank(self.ranking, stats[107])
                     text = f'#{leaderboard_position + 1} {text}'
 
                 draw.text(
