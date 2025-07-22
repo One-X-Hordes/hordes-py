@@ -226,7 +226,7 @@ def get_level(item_type: ItemType, tier: int) -> int:
     baselvl = logic.get('baselvl', None)
     tiers = logic.get('tiers', None)
 
-    if baselvl and tiers:
+    if baselvl is not None and tiers is not None:
         return baselvl + int(tier / tiers * 100)
     else:
         return 0
