@@ -1,5 +1,5 @@
 import math
-from typing import Any, Iterable, Union
+from typing import Any, Callable, Iterable, Literal, Union, overload
 
 # fmt: off
 __all__ = (
@@ -27,7 +27,15 @@ class _MissingSentinel:
 MISSING: Any = _MissingSentinel()
 
 
-def math_round(x: Union[int, float]) -> int:
+@overload
+def math_round(x: float, ndigits: Literal[0] = 0) -> int: ...
+
+
+@overload
+def math_round(x: float, ndigits: int) -> float: ...
+
+
+def math_round(x: float, ndigits: int = 0) -> float:
     """Always rounds `x < .5` down and `x >= 0.5` up.
 
     Parameters
@@ -41,30 +49,54 @@ def math_round(x: Union[int, float]) -> int:
         Rounded number.
     """
 
-    floor_x = math.floor(x)
+    scaled: float = x * 10**ndigits
 
-    if (x - floor_x) < 0.5:
-        return floor_x
+    floor_x = math.floor(scaled)
+
+    if (scaled - floor_x) < 0.5:
+        rounded = floor_x
     else:
-        return math.ceil(x)
+        rounded = math.ceil(scaled)
+
+    return rounded / 10**ndigits
 
 
-def iter_index(iterable: Iterable[float], value: float) -> int:
+def find_first_index(
+    iterable: Iterable[float],
+    value: float,
+    comp_func: Callable[[float, float], bool] = lambda a, b: a >= b,
+) -> int:
     """
+    Returns the index of the first element in the iterable that satisfies the comparison function.
 
     Parameters
     ----------
     iterable : Iterable[float]
+        An iterable of float values to search through.
     value : float
+        The reference value to compare against each element of the iterable.
+    comp_func : Callable[[float, float], bool], optional
+        A binary comparison function that takes two floats and returns a boolean.
+        Defaults to checking if `value >= element`.
 
     Returns
     -------
     int
-        Index of iterable where `value` >= `iterable[index]` if exists. Otherwise -1.
+        The index of the first element in the iterable for which `comp_func(value, element)`
+        returns True. Returns -1 if no such element is found.
+
+    Examples
+    --------
+    >>> iter_index([1.0, 2.5, 3.0], 2.0)
+    1
+    >>> iter_index([5.0, 3.0, 1.0], 2.0, lambda a, b: a < b)
+    2
+    >>> iter_index([1.0, 2.0, 3.0], 0.5)
+    -1
     """
 
     for i, iv in enumerate(iterable):
-        if value >= iv:
+        if comp_func(value, iv):
             return i
 
     return -1
