@@ -291,7 +291,7 @@ class ItemImage:
                 if stat['type'] == 'main':
                     text = f"{formatted} {get_stat_name(self.loc,stat['id'])}"
                     fill = border_color
-                elif stat['type'] == 'sub':
+                elif stat['type'] == 'bonus':
                     text = f"+ {formatted} {get_stat_name(self.loc,stat['id'])} {stat['percent']}%"
                     fill = self.color_scheme.STAT_QUALITY[get_quality(stat['percent'], extended=extended_quality)]
                 else:

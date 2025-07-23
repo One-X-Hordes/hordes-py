@@ -1,4 +1,4 @@
-from typing import Literal, TypedDict
+from typing import Literal, Sequence, TypedDict
 
 BoundId = Literal[0, 1, 2]
 ItemType = Literal[
@@ -27,7 +27,8 @@ ItemType = Literal[
     'material',
     'gold',
 ]
-Rolls = list[int]
+Rolls = Sequence[int]
+ItemStatType = Literal['main', 'bonus']
 
 
 class ItemRawStatDict(TypedDict):
@@ -37,4 +38,4 @@ class ItemRawStatDict(TypedDict):
 
 class ItemStatDict(ItemRawStatDict):
     value: float
-    type: Literal['main', 'sub']
+    type: ItemStatType

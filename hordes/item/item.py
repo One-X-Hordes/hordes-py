@@ -5,7 +5,8 @@ from typing import TYPE_CHECKING, Optional, Sequence, Union
 from ..models import ItemDict, ItemModel
 from ..utils import MISSING, math_round
 from .customs import generate_custom_item, parse_custom_item
-from .stats import MAIN_STATS_DATA, SUB_STAT_DATA, UPGRADE_GAINS_DATA, ItemStats, get_rolls
+from .logic import BONUS_STAT_LOGIC, ITEM_LOGIC, MAIN_STATS_LOGIC, UPGRADE_GAINS
+from .stats import ItemStats, get_rolls
 
 if TYPE_CHECKING:
     from typing_extensions import Self
@@ -33,7 +34,7 @@ class Item:
     def __init__(
         self,
         id: IntOrNone,
-        item_type: ItemType,
+        item_type: str,
         tier: int,
         percent: int,
         bound: BoundId,
@@ -41,38 +42,45 @@ class Item:
         upgrade: Optional[int] = None,
         stacks: Optional[int] = None,
     ) -> None:
-        if item_type not in MAIN_STATS_DATA:
-            raise NotImplementedError(f'Item type {item_type} is not implemented.')
+        if item_type not in ITEM_LOGIC:
+            raise NotImplementedError(f'Unknown item type \'{item_type}\'')
+
+        if tier not in ITEM_LOGIC[item_type]:
+            raise NotImplementedError(f'Unknown item tier \'{tier}\'')
 
         self.id = id
         self._type = item_type
         self._tier = tier
-        self._percent = percent
         self.bound = bound
         self._upgrade = upgrade
         self.stacks = stacks
 
+        self._logic = self._reload_logic()
+        self._percent = self._logic.get('quality') or percent
         self._level = self._reload_level()
 
-        self._stats, self._gearscore = self._reload_stats(additional=stats)
+        self._stats, self._gearscore = self._reload_stats(bonus=stats)
+
+    def _reload_logic(self):
+        self._logic = ITEM_LOGIC[self.type][self.tier]
+        return self._logic
 
     def _reload_level(self) -> int:
-        self._level = get_level(self.type, self.tier)
+        self._level = self._logic['level']
         return self._level
 
-    def _reload_stats(self, additional: Optional[Sequence[ItemRawStatDict]] = MISSING) -> tuple[ItemStats, int]:
-        if additional is MISSING:
-            additional = self.stats.to_raw()
+    def _reload_stats(self, bonus: Optional[Sequence[ItemRawStatDict]] = MISSING) -> tuple[ItemStats, int]:
+        if bonus is MISSING:
+            bonus = [stat for stat in self.stats.to_raw() if stat['type'] == 'bonus']
 
         self._stats = ItemStats(
-            item_type=self.type,
-            level=self.level,
+            logic=self._logic,
             percent=self.percent,
             upgrade=self.upgrade or 0,
-            additional=additional,
+            bonus=bonus,
         )
 
-        self._gearscore = get_gearscore(self)
+        self._gearscore = self._logic.get('gs') or get_gearscore(self)
 
         return self._stats, self._gearscore
 
@@ -82,6 +90,7 @@ class Item:
 
     def set_type(self, /, item_type: ItemType) -> None:
         self._type = item_type
+        self._reload_logic()
         self._reload_level()
         self._reload_stats()
 
@@ -91,6 +100,7 @@ class Item:
 
     def set_tier(self, /, tier: int) -> None:
         self._tier = tier
+        self._reload_logic()
         self._reload_level()
         self._reload_stats()
 
@@ -99,23 +109,23 @@ class Item:
         return self._percent
 
     def set_percent(self, /, percent: int) -> None:
-        self._percent = percent
+        self._percent = self._logic.get('quality') or percent
         self._reload_stats()
 
     @property
     def stats(self) -> ItemStats:
         return self._stats
 
-    def set_stats(self, /, stats: list[ItemRawStatDict]) -> None:
+    def set_stats(self, /, stats: Sequence[ItemRawStatDict]) -> None:
         self._reload_stats(stats)
 
     @property
     def slot(self) -> tuple[int, ...]:
-        return MAIN_STATS_DATA[self.type].get('slot', ())
+        return MAIN_STATS_LOGIC[self.type].get('slot', ())
 
     @property
     def class_id(self) -> Union[ClassId, None]:
-        return MAIN_STATS_DATA[self.type].get('class', None)
+        return MAIN_STATS_LOGIC[self.type].get('class', None)
 
     @property
     def upgrade(self) -> Union[int, None]:
@@ -167,10 +177,10 @@ class Item:
 
         item_type = data['type']
 
-        if item_type not in MAIN_STATS_DATA:
+        if item_type not in MAIN_STATS_LOGIC:
             raise ValueError(f'Item type {item_type} is not implemented.')
 
-        tier = min(data['tier'], MAIN_STATS_DATA[item_type].get('tiers', 1000)) - 1
+        tier = min(data['tier'], MAIN_STATS_LOGIC[item_type].get('tiers', 1000)) - 1
         percent = min(data['percent'], MAX_ITEM_PERCENT)
         stats = data['stats'][: get_stats_amount(percent)]
 
@@ -190,7 +200,6 @@ class Item:
             percent=self.percent,
             tier=self.tier,
             stats=self.stats,
-            level=self.level,
             upgrade=self.upgrade or 0,
         )
 
@@ -213,23 +222,8 @@ def get_stats_amount(percent: int):
 
 
 def get_id(roll: int) -> int:
-    keys = list(SUB_STAT_DATA.keys())
+    keys = list(BONUS_STAT_LOGIC.keys())
     return keys[int(roll / 101 * len(keys))]
-
-
-def get_level(item_type: ItemType, tier: int) -> int:
-    if item_type == 'charm':
-        return 45
-
-    logic = MAIN_STATS_DATA[item_type]
-
-    baselvl = logic.get('baselvl', None)
-    tiers = logic.get('tiers', None)
-
-    if baselvl is not None and tiers is not None:
-        return baselvl + int(tier / tiers * 100)
-    else:
-        return 0
 
 
 def get_stats(item_type: ItemType, rolls: Union[Rolls, None]) -> dict[int, int]:
@@ -237,7 +231,7 @@ def get_stats(item_type: ItemType, rolls: Union[Rolls, None]) -> dict[int, int]:
     if not rolls:
         return stats
 
-    item_logic = MAIN_STATS_DATA[item_type]
+    item_logic = MAIN_STATS_LOGIC[item_type]
     main_stats = list(item_logic['stats'].keys()) if 'stats' in item_logic else []
 
     percent = rolls[0]
@@ -280,7 +274,7 @@ def get_gearscore(item: Item) -> int:
         if stat.id == 17:
             continue
 
-        value = stat.value / UPGRADE_GAINS_DATA[stat.id]
+        value = stat.value / UPGRADE_GAINS[stat.id]
         if item.type == 'shield' and stat.type == 'main':
             value *= 0.5
         if item.type == 'orb' and stat.type == 'main':

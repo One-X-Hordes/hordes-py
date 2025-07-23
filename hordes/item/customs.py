@@ -4,10 +4,12 @@ import math
 import re
 from typing import TYPE_CHECKING, Optional, TypedDict
 
+from .logic import ITEM_LOGIC
 from .stats import ItemStats, get_sub_stat_value
 
 if TYPE_CHECKING:
     from ..types.item import ItemRawStatDict, ItemType
+    from .logic import ItemLogicEntry
 
     class ParsedCustomItem(TypedDict):
         percent: int
@@ -77,16 +79,14 @@ def parse_custom_item(input_string: str) -> ParsedCustomItem:
     }
 
 
-def round_stat_percent(percent: float, *, level: int, id: int, item_type: ItemType, upgrade: int = 0) -> int:
-    value = get_sub_stat_value(level, id, item_type, percent, upgrade)
-    rounded_value = get_sub_stat_value(level, id, item_type, round(percent), upgrade)
+def round_stat_percent(logic: ItemLogicEntry, percent: float, id: int, upgrade: int = 0) -> int:
+    value = get_sub_stat_value(logic, id, percent, upgrade)
+    rounded_value = get_sub_stat_value(logic, id, math.floor(percent), upgrade)
 
-    if value > rounded_value:
-        percent = int(percent)
-    elif value < rounded_value:
-        percent = math.ceil(percent)
+    if value == rounded_value:
+        percent = math.floor(percent)
     else:
-        percent = round(percent)
+        percent = math.ceil(percent)
 
     return percent
 
@@ -97,23 +97,22 @@ def generate_custom_item(
     percent: int,
     tier: int,
     stats: Optional[ItemStats] = None,
-    level: int,
     upgrade: int,
 ) -> str:
     base = [item_type, str(percent), 't', str(tier + 1)]
 
     if stats:
+        logic = ITEM_LOGIC[item_type][tier]
         for stat in stats:
-            if stat.type != 'sub':
+            if stat.type != 'bonus':
                 continue
 
             code = STAT_CODES[stat.id][0]
 
             percent = round_stat_percent(
+                logic,
                 stat.percent,
                 id=stat.id,
-                level=level,
-                item_type=item_type,
                 upgrade=upgrade,
             )
 
