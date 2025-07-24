@@ -99,7 +99,7 @@ def generate_custom_item(
     stats: Optional[ItemStats] = None,
     upgrade: int,
 ) -> str:
-    base = [item_type, str(percent), 't', str(tier + 1)]
+    base = [item_type.capitalize(), str(percent), 't', str(tier + 1)]
 
     if stats:
         logic = ITEM_LOGIC[item_type][tier]
