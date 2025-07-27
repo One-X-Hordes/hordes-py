@@ -3,6 +3,8 @@ from __future__ import annotations
 import math
 from typing import TYPE_CHECKING, NamedTuple
 
+from .data import Stat
+
 if TYPE_CHECKING:
     from .stats import Stats
     from .types.character import ClassId
@@ -19,13 +21,13 @@ class Buildscore(NamedTuple):
 
 
 def get_buildscore(stats: Stats, class_id: ClassId) -> Buildscore:
-    hp = stats[6]
-    defense = stats[12]
-    block = min(stats[13] / 10, 100)
-    max_dmg = stats[11]
-    min_dmg = min(stats[10], max_dmg)
-    crit = min(stats[14] / 10, 100)
-    haste = stats[16] / 10
+    hp = stats[Stat.HP]
+    defense = stats[Stat.Defense]
+    block = min(stats[Stat.Block] / 10, 100)
+    max_dmg = stats[Stat.MaxDmg]
+    min_dmg = min(stats[Stat.MinDmg], max_dmg)
+    crit = min(stats[Stat.Critical] / 10, 100)
+    haste = stats[Stat.Haste] / 10
 
     block_multiplier = (0.6, 0.45, 0.45, 0.45)
 

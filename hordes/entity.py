@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import TYPE_CHECKING, Any, MutableMapping, Optional, Union
 
+from .data import Stat
 from .effects import Effect, Effects
 from .stats import MutableStats, StatsProxy
 from .utils import MISSING, math_round
@@ -52,14 +53,20 @@ def apply_converts(mapping: Union[MutableMapping[int, float], MutableStats], *co
         mapping[gain_id] = value + mapping[id] * gain
 
 
-def convert(mapping: MutableStats) -> None:
-    mapping[6] += mapping[0] * 2 + mapping[1] * 4
-    mapping[7] += int(mapping[3] * 0.8) + math_round(mapping[4] * 0.8)
-    mapping[8] += mapping[0] * 0.3
-    mapping[12] += mapping[1] * 1
-    mapping[14] += int(mapping[2] * 0.5) + int(mapping[3] * 0.4) + math_round(mapping[5] * 0.2)
-    mapping[16] += math_round(mapping[4] * 0.3)
-    mapping[18] += mapping[5] * 0.4
+def convert(stats: MutableStats) -> None:
+    stats[Stat.HP] += stats[Stat.Strength] * 2 + stats[Stat.Stamina] * 4
+    stats[Stat.MP] += int(stats[Stat.Intelligence] * 0.8) + math_round(stats[Stat.Wisdom] * 0.8)
+    stats[Stat.HPReg] += stats[Stat.Strength] * 0.3
+    stats[Stat.Defense] += stats[Stat.Stamina] * 1
+    # fmt: off
+    stats[Stat.Critical] += (
+        int(stats[Stat.Dexterity] * 0.5) +
+        int(stats[Stat.Intelligence] * 0.4) +
+        math_round(stats[Stat.Luck] * 0.2)
+    )
+    # fmt: on
+    stats[Stat.Haste] += math_round(stats[Stat.Wisdom] * 0.3)
+    stats[Stat.ItemFind] += stats[Stat.Luck] * 0.4
 
 
 class EntityStats(MutableStats):
@@ -100,8 +107,8 @@ class EntityStats(MutableStats):
             for gain_id, gain in CONVERTABLE_STATS[id].items():
                 gains[gain_id] += gain * amount
 
-        elif id == 30:  # Special case
-            for key in (10, 11):
+        elif id == Stat.PercentIncreasedDmg:  # Special case
+            for key in (Stat.MinDmg, Stat.MaxDmg):
                 gains[key] = self._layers[1][key] * (1 + amount / 100)
 
         if self._effects:
@@ -122,11 +129,11 @@ class EntityStats(MutableStats):
 
         self._layers[1] = dict(self._stats)
 
-        self[10] *= 1 + self[30] / 100
-        self[11] *= 1 + self[30] / 100
+        self[Stat.MinDmg] *= 1 + self[Stat.PercentIncreasedDmg] / 100
+        self[Stat.MaxDmg] *= 1 + self[Stat.PercentIncreasedDmg] / 100
 
-        self[10] = int(self[10])
-        self[11] = math_round(self[11])
+        self[Stat.MinDmg] = int(self[Stat.MinDmg])
+        self[Stat.MaxDmg] = math_round(self[Stat.MaxDmg])
 
         self.evaluated = True
         return self

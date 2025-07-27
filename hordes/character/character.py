@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Mapping, Optional
 
 from ..buildscore import get_buildscore
-from ..data import CHARACTER_BLOODLINES, EQUIP_SLOT_IDS, STATPOINTS_PER_LEVEL
+from ..data import CHARACTER_BLOODLINES, EQUIP_SLOT_IDS, STATPOINTS_PER_LEVEL, Stat
 from ..effects import Effect, Effects
 from ..entity import Entity, EntityStats
 from ..item import Item
@@ -26,22 +26,22 @@ __all__ = (
 # fmt: on
 
 
-DEFAULT_STATS = {
-    0: 10,
-    1: 10,
-    2: 10,
-    3: 10,
-    4: 10,
-    5: 5,
-    6: 100,
-    7: 100,
-    8: 20,
-    9: 30,
-    12: 15,
-    14: 50,
-    15: 105,
-    17: 10,
-    19: 15,
+DEFAULT_STATS: dict[int, int] = {
+    Stat.Strength: 10,
+    Stat.Stamina: 10,
+    Stat.Dexterity: 10,
+    Stat.Intelligence: 10,
+    Stat.Wisdom: 10,
+    Stat.Luck: 5,
+    Stat.HP: 100,
+    Stat.MP: 100,
+    Stat.HPReg: 20,
+    Stat.MPReg: 30,
+    Stat.Defense: 15,
+    Stat.Critical: 50,
+    Stat.MoveSpeed: 105,
+    Stat.AttackSpeed: 10,
+    Stat.BagSlots: 15,
 }
 
 
@@ -102,7 +102,7 @@ class Character(Entity):
 
     @property
     def statpoints_available(self) -> int:
-        return int(self._stats[22])
+        return int(self._stats[Stat.StatPoints])
 
     @property
     def slots(self) -> SlotsProxy:
@@ -133,8 +133,8 @@ class Character(Entity):
         prestige = self.prestige if not tierlist else Prestige(48000)
 
         # Stats from level
-        stats[1] += 2 * self.level
-        stats[6] += 8 * self.level
+        stats[Stat.Stamina] += 2 * self.level
+        stats[Stat.HP] += 8 * self.level
         stats[CHARACTER_BLOODLINES[self.class_id]] += self.level
 
         # Prestige
@@ -154,9 +154,9 @@ class Character(Entity):
             stats[id] += value
 
         # Additional
-        stats[22] = self.level * STATPOINTS_PER_LEVEL - self._statpoints.used
-        stats[25] = gearscore
-        stats[26] = min(45, max(self.level, (gearscore ** (5 / 6)) / 3.6))
+        stats[Stat.StatPoints] = self.level * STATPOINTS_PER_LEVEL - self._statpoints.used
+        stats[Stat.GearScore] = gearscore
+        stats[Stat.PVPLevel] = min(45, max(self.level, (gearscore ** (5 / 6)) / 3.6))
 
     def _reload_stats(self, *, effects: Optional[Effects] = MISSING, tierlist: bool = False, **kwargs: Any) -> EntityStats:
         if not tierlist:
@@ -172,13 +172,13 @@ class Character(Entity):
         stats = super()._reload_stats(effects=effects, tierlist=tierlist, **kwargs)
 
         buildscore = get_buildscore(stats, class_id=self.class_id)
-        stats[101] = buildscore.dps
-        stats[102] = buildscore.burst
-        stats[103] = buildscore.ehp
-        stats[104] = buildscore.dps_score
-        stats[105] = buildscore.tank_score
-        stats[106] = buildscore.hybrid_score
-        stats[107] = overall_score or buildscore.overall_score
+        stats[Stat.DPS] = buildscore.dps
+        stats[Stat.Burst] = buildscore.burst
+        stats[Stat.EHP] = buildscore.ehp
+        stats[Stat.DPSScore] = buildscore.dps_score
+        stats[Stat.TankScore] = buildscore.tank_score
+        stats[Stat.HybridScore] = buildscore.hybrid_score
+        stats[Stat.OverallScore] = overall_score or buildscore.overall_score
 
         return stats
 

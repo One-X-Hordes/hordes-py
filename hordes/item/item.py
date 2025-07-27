@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional, Sequence, Union
 
+from ..data import Stat
 from ..models import ItemDict, ItemModel
 from ..utils import MISSING, math_round
 from .customs import generate_custom_item, parse_custom_item
@@ -266,12 +267,9 @@ def get_stats_from_rolls(item_type: ItemType, rolls: Rolls) -> dict[int, ItemRaw
 
 
 def get_gearscore(item: Item) -> int:
-    if item.type == 'charm':
-        return 30
-
     gearscore = 0
     for stat in item.stats:
-        if stat.id == 17:
+        if stat.id == Stat.AttackSpeed:
             continue
 
         value = stat.value / UPGRADE_GAINS[stat.id]

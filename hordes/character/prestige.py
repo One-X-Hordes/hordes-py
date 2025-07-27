@@ -1,21 +1,21 @@
-from ..data import PRESTIGE_RANKS
+from ..data import PRESTIGE_RANKS, Stat
 from ..stats import MutableStats
 
 __all__ = ()
 
 PRESTIGE_BUFFS: tuple[tuple[tuple[int, int], ...], ...] = (
-    ((15, 5),),
-    ((7, 50),),
-    ((18, 15),),
-    ((10, 5), (11, 5)),
-    ((8, 20), (9, 20)),
-    ((15, 5),),
-    ((6, 30),),
-    ((18, 15),),
-    ((14, 50),),
-    ((16, 30),),
-    ((6, 30),),
-    ((10, 5), (11, 5)),
+    ((Stat.MoveSpeed, 5),),
+    ((Stat.MP, 50),),
+    ((Stat.ItemFind, 15),),
+    ((Stat.MinDmg, 5), (Stat.MaxDmg, 5)),
+    ((Stat.HPReg, 20), (Stat.MPReg, 20)),
+    ((Stat.MoveSpeed, 5),),
+    ((Stat.HP, 30),),
+    ((Stat.ItemFind, 15),),
+    ((Stat.Critical, 50),),
+    ((Stat.Haste, 30),),
+    ((Stat.HP, 30),),
+    ((Stat.MinDmg, 5), (Stat.MaxDmg, 5)),
 )
 
 
