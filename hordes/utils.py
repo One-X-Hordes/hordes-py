@@ -28,19 +28,12 @@ MISSING: Any = _MissingSentinel()
 
 
 @overload
-def math_round(x: float, ndigits: Literal[0] = 0) -> int: ...
-
-
-@overload
-def math_round(x: float, ndigits: int) -> float: ...
-
-
-def math_round(x: float, ndigits: int = 0) -> float:
+def math_round(x: float, ndigits: Literal[0] = 0) -> int:
     """Always rounds `x < .5` down and `x >= 0.5` up.
 
     Parameters
     ----------
-    x : int | float
+    x : float
         Number to round.
 
     Returns
@@ -49,16 +42,36 @@ def math_round(x: float, ndigits: int = 0) -> float:
         Rounded number.
     """
 
-    scaled: float = x * 10**ndigits
 
-    floor_x = math.floor(scaled)
+@overload
+def math_round(x: float, ndigits: int) -> float:
+    """Always rounds `x < .5` down and `x >= 0.5` up.
 
-    if (scaled - floor_x) < 0.5:
+    Parameters
+    ----------
+    x : float
+        Number to round.
+
+    Returns
+    -------
+    float
+        Rounded number.
+    """
+
+
+def math_round(x: float, ndigits: int = 0) -> float:
+    upscaled: float = x * 10**ndigits
+
+    floor_x = math.floor(upscaled)
+
+    if (upscaled - floor_x) < 0.5:
         rounded = floor_x
     else:
-        rounded = math.ceil(scaled)
+        rounded = math.ceil(upscaled)
 
-    return rounded / 10**ndigits
+    downscaled = rounded / 10**ndigits
+
+    return int(downscaled) if ndigits == 0 else downscaled
 
 
 def find_first_index(
