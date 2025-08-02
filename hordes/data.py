@@ -1,6 +1,7 @@
 from enum import IntEnum
 
 __all__ = (
+    'Class',
     'Stat',
     'CHARACTER_BLOODLINES',
     'EQUIP_SLOT_IDS',
@@ -9,6 +10,13 @@ __all__ = (
     'ELO_RANKS',
     'PRESTIGE_RANKS',
 )
+
+
+class Class(IntEnum):
+    Warrior = 0
+    Mage = 1
+    Archer = 2
+    Shaman = 3
 
 
 class Stat(IntEnum):
