@@ -5,7 +5,7 @@ from typing import Any, Mapping, Optional
 from PIL import Image, ImageOps
 
 from ..character import Character
-from ..data import EQUIP_SLOT_IDS
+from ..data import EQUIP_SLOT_IDS, Stat
 from ..item import Item
 from ..models import Ranking
 from ..tierlist import get_leaderboard_rank, get_tierlist_rank
@@ -382,10 +382,10 @@ class CharacterImage:
 
             # Ranks
             if self.ranking and rank:
-                rank_id = get_tierlist_rank(self.ranking, stats[107])
+                rank_id = get_tierlist_rank(self.ranking, stats[Stat.OverallScore])
                 text = get_tierlist_rank_name(rank_id)
                 if rank_id in range(2):
-                    leaderboard_position = get_leaderboard_rank(self.ranking, stats[107])
+                    leaderboard_position = get_leaderboard_rank(self.ranking, stats[Stat.OverallScore])
                     text = f'#{leaderboard_position + 1} {text}'
 
                 draw.text(
@@ -410,10 +410,10 @@ class CharacterImage:
             if not character.statpoints_available:
                 arrow_rectangle = set_opacity(arrow_rectangle, 0.5)
 
-            for i, (id, stat) in enumerate(chain(statpoints, [(22, stats[22])])):
+            for i, (id, stat) in enumerate(chain(statpoints, [(Stat.StatPoints, stats[Stat.StatPoints])])):
                 text = format_stat(id, stats[id], accuracy=2, maxdigit=5)
 
-                if id != 22:
+                if id != Stat.StatPoints:
                     arrow_pos = self.layout.statpoints.rows[i][2].inner_box.top_left
                     image.paste(arrow_rectangle, (arrow_pos), arrow_rectangle)
                     if stat:
