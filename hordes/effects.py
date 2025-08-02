@@ -66,11 +66,6 @@ class Effects:
             if current:
                 current.active = True
 
-    def clear_effects(self) -> None:
-        for effect_dict in self._effects.values():
-            effect_dict.clear()
-        return self._effects.clear()
-
     def __iter__(self) -> Generator[Effect]:
         for effect_dict in self._effects.values():
             for effect in effect_dict.values():

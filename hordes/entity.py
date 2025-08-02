@@ -142,7 +142,13 @@ class EntityStats(MutableStats):
 class Entity:
     faction_id: FactionId
 
-    def __init__(self, name: str, level: int, faction_id: FactionId, id: Optional[int]) -> None:
+    def __init__(
+        self,
+        name: str,
+        level: int,
+        faction_id: FactionId,
+        id: int = MISSING,
+    ) -> None:
         self.name = name
         self._level = level
         self.faction_id = faction_id
@@ -184,8 +190,11 @@ class Entity:
             self._effects.set_effect(effect)
         self._reload_stats()
 
-    def clear_effects(self) -> None:
-        self._effects.clear_effects()
+    def clear_effects(self, clear_passive: bool, keep_self: bool = False) -> None:
+        for effect in self._effects:
+            if (not keep_self or effect.caster != self.id) and effect.logic.passive == clear_passive:
+                self.remove_effect(effect.id, caster=effect.caster)
+
         self._reload_stats()
 
     def remove_effect(self, id: int, *, caster: int = MISSING):

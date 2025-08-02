@@ -56,7 +56,7 @@ class Character(Entity):
         level: int,
         prestige: int = 0,
         elo: int = 1500,
-        id: Optional[int] = None,
+        id: int = MISSING,
     ) -> None:
         super().__init__(name=name, level=level, faction_id=faction_id, id=id)
         self.class_id = class_id
@@ -66,7 +66,7 @@ class Character(Entity):
         self._slots = MutableSlots()
         self._statpoints = MutableStatpoints()
 
-        self.set_effects(Effect(61 + self.class_id, level=1, stacks=1))
+        self.set_effects(Effect(61 + self.class_id, level=1, stacks=1, caster=self.id))
 
     @property
     def elo(self) -> Elo:
