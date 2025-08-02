@@ -96,23 +96,30 @@ def find_first_index(
     -------
     int
         The index of the first element in the iterable for which `comp_func(value, element)`
-        returns True. Returns -1 if no such element is found.
+        returns True.
+
+    Raises
+    ------
+    IndexError
+        If no element satisfies the comparison function.
 
     Examples
     --------
-    >>> iter_index([1.0, 2.5, 3.0], 2.0)
+    >>> find_first_index([1.0, 2.5, 3.0], 2.0)
     1
-    >>> iter_index([5.0, 3.0, 1.0], 2.0, lambda a, b: a < b)
+    >>> find_first_index([5.0, 3.0, 1.0], 2.0, lambda a, b: a < b)
     2
-    >>> iter_index([1.0, 2.0, 3.0], 0.5)
-    -1
+    >>> find_first_index([1.0, 2.0, 3.0], 0.5)
+    Traceback (most recent call last):
+        ...
+    IndexError: No matching element found
     """
 
     for i, iv in enumerate(iterable):
         if comp_func(value, iv):
             return i
 
-    return -1
+    raise IndexError("No matching element found")
 
 
 def get_attr_or_item(obj: Any, name: Union[str, int]) -> Any:

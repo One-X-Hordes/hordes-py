@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 BOUND_NAMES = ('', 'AC', 'CB')
 QUALITY_NAMES = ('common', 'uncommon', 'rare', 'epic', 'legendary', 'legendary')
-TIERLIST_RANK_NAMES = ('SSS', 'SS', 'S', 'A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'E', 'F')
+TIERLIST_RANK_NAMES = ('F', 'E', 'D-', 'D', 'D+', 'C-', 'C', 'C+', 'B-', 'B', 'B+', 'A-', 'A', 'A+', 'S', 'SS', 'SSS')
 
 
 def get_class_name(locale: Localization, /, id: ClassId) -> str:

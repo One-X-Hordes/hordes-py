@@ -8,7 +8,11 @@ __all__ = (
 
 
 def get_tierlist_rank(ranking: Ranking, buildscore: float) -> int:
-    return find_first_index(get_attr_or_item(ranking, 'ranks'), buildscore)
+    ranks_list: list[float] = get_attr_or_item(ranking, 'ranks')
+    try:
+        return (len(ranks_list) - 1) - find_first_index(ranks_list, buildscore)
+    except IndexError:
+        return 0
 
 
 def _leaderboard_comp_func(a: float, b: float) -> bool:
@@ -16,4 +20,8 @@ def _leaderboard_comp_func(a: float, b: float) -> bool:
 
 
 def get_leaderboard_rank(ranking: Ranking, buildscore: float) -> int:
-    return find_first_index(get_attr_or_item(ranking, 'leaderboard'), buildscore, _leaderboard_comp_func)
+    leaderboard_list: list[float] = get_attr_or_item(ranking, 'leaderboard')
+    try:
+        return find_first_index(leaderboard_list, buildscore, _leaderboard_comp_func)
+    except IndexError:
+        return len(leaderboard_list)
