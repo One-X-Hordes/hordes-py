@@ -8,7 +8,7 @@ __all__ = (
 
 
 def get_tierlist_rank(ranking: Ranking, buildscore: float) -> int:
-    ranks_list: list[float] = get_attr_or_item(ranking, 'ranks')
+    ranks_list: list[float] = get_attr_or_item(ranking, 'overall')
     try:
         return (len(ranks_list) - 1) - find_first_index(ranks_list, buildscore)
     except IndexError:

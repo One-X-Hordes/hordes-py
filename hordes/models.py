@@ -54,12 +54,12 @@ class ItemModel(Protocol):
 
 class RankingP(Protocol):
     leaderboard: Sequence[float]
-    ranks: Sequence[float]
+    overall: Sequence[float]
 
 
 class RankingDict(TypedDict):
     leaderboard: Sequence[float]
-    ranks: Sequence[float]
+    overall: Sequence[float]
 
 
 Ranking = Union[RankingP, RankingDict]
