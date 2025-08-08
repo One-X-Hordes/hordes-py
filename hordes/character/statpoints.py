@@ -16,7 +16,7 @@ class Statpoints:
         return sum(self._statpoints)
 
     def to_dict(self) -> dict[int, int]:
-        return {id: value for id, value in self}
+        return {id: value for id, value in self if value}
 
     def __getitem__(self, key: SupportsIndex) -> int:
         return self._statpoints[key]
