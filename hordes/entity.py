@@ -62,10 +62,10 @@ def convert(stats: MutableStats) -> None:
     stats[Stat.Critical] += (
         int(stats[Stat.Dexterity] * 0.5) +
         int(stats[Stat.Intelligence] * 0.4) +
-        math_round(stats[Stat.Luck] * 0.2)
+        stats[Stat.Luck] * 0.2
     )
     # fmt: on
-    stats[Stat.Haste] += math_round(stats[Stat.Wisdom] * 0.3)
+    stats[Stat.Haste] += stats[Stat.Wisdom] * 0.3
     stats[Stat.ItemFind] += stats[Stat.Luck] * 0.4
 
 
@@ -126,6 +126,9 @@ class EntityStats(MutableStats):
 
         if effects:
             self._apply_effects(effects)
+
+        self[Stat.Critical] = math_round(self[Stat.Critical])
+        self[Stat.Haste] = math_round(self[Stat.Haste])
 
         self._layers[1] = dict(self._stats)
 
