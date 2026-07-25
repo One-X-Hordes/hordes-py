@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, Protocol, Sequence, TypedDict, Union
+from typing import TYPE_CHECKING, Mapping, Optional, Protocol, Sequence, TypedDict, Union
 
 if TYPE_CHECKING:
     from .types.character import ClassId, FactionId
@@ -54,12 +54,14 @@ class ItemModel(Protocol):
 
 class RankingP(Protocol):
     leaderboard: Sequence[float]
-    overall: Sequence[float]
+    brackets: Mapping[int, Sequence[float]]
+    overall: int
 
 
 class RankingDict(TypedDict):
     leaderboard: Sequence[float]
-    overall: Sequence[float]
+    brackets: Mapping[int, Sequence[float]]
+    overall: int
 
 
 Ranking = Union[RankingP, RankingDict]

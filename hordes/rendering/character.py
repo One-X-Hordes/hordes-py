@@ -382,11 +382,11 @@ class CharacterImage:
 
             # Ranks
             if self.ranking and rank:
-                rank_id = get_tierlist_rank(self.ranking, stats[Stat.OverallScore])
+                rank_id = get_tierlist_rank(self.ranking, stats)
                 text = get_tierlist_rank_name(rank_id)
                 rank_count = len(self.color_scheme.TIERLIST_RANK)
                 if rank_id in range(rank_count - 2, rank_count):
-                    leaderboard_position = get_leaderboard_rank(self.ranking, stats[Stat.OverallScore])
+                    leaderboard_position = get_leaderboard_rank(self.ranking, stats)
                     text = f'#{leaderboard_position + 1} {text}'
 
                 draw.text(
