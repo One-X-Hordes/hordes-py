@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "hordes-py"
 requires-python = ">=3.9"
-dependencies = ["pillow>=11.1.0", "cairosvg==2.7.1"]
+dependencies = ["pillow>=11.1.0,<12", "cairosvg==2.7.1"]
 dynamic = ["version"]
 
 [project.optional-dependencies]
