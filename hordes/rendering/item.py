@@ -82,6 +82,7 @@ def fit_text(
 
         final = '\n'.join([' '.join(line) for line in lines])
     else:
+        lines.append([text])
         final = text
 
     lines_height = sum(font.getbbox(' '.join(line))[3] for line in lines)
@@ -359,5 +360,4 @@ class ItemImage:
             background.save(bytes_, format="PNG")
             bytes_.seek(0)
 
-        return bytes_
         return bytes_
