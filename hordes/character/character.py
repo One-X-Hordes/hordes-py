@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Mapping, Optional
 
 from ..buildscore import get_buildscore
-from ..data import CHARACTER_BLOODLINES, EQUIP_SLOT_IDS, STATPOINTS_PER_LEVEL, Stat
+from ..data import CLASS_BLOODLINES, EQUIP_SLOT_IDS, STATPOINTS_PER_LEVEL, Stat
 from ..effects import Effect, Effects
 from ..entity import Entity, EntityStats
 from ..item import Item
@@ -135,7 +135,7 @@ class Character(Entity):
         # Stats from level
         stats[Stat.Stamina] += 2 * self.level
         stats[Stat.HP] += 8 * self.level
-        stats[CHARACTER_BLOODLINES[self.class_id]] += self.level
+        stats[CLASS_BLOODLINES[self.class_id]] += self.level
 
         # Prestige
         stats += prestige.get_stats()

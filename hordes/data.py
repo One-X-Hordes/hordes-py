@@ -3,7 +3,7 @@ from enum import IntEnum
 __all__ = (
     'Class',
     'Stat',
-    'CHARACTER_BLOODLINES',
+    'CLASS_BLOODLINES',
     'EQUIP_SLOT_IDS',
     'STATPOINTS_PER_LEVEL',
     'STATPOINTS_ID_RANGE',
@@ -64,7 +64,7 @@ class Stat(IntEnum):
     OverallScore = 107
 
 
-CHARACTER_BLOODLINES: tuple[int, ...] = (
+CLASS_BLOODLINES: tuple[int, ...] = (
     Stat.Strength,
     Stat.Intelligence,
     Stat.Dexterity,
