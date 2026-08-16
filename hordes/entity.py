@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, MutableMapping, Optional, Union
 from .data import Stat
 from .effects import Effect, Effects
 from .stats import MutableStats, StatsProxy
-from .utils import MISSING, math_round
+from .utils import MISSING, math_round, multiply
 
 if TYPE_CHECKING:
     from typing_extensions import Self
@@ -56,17 +56,17 @@ def apply_converts(mapping: Union[MutableMapping[int, float], MutableStats], *co
 def convert(stats: MutableStats) -> None:
     stats[Stat.HP] += stats[Stat.Strength] * 2 + stats[Stat.Stamina] * 4
     stats[Stat.MP] += int(stats[Stat.Intelligence] * 0.8) + math_round(stats[Stat.Wisdom] * 0.8)
-    stats[Stat.HPReg] += stats[Stat.Strength] * 0.3
+    stats[Stat.HPReg] += multiply(stats[Stat.Strength], 0.3)
     stats[Stat.Defense] += stats[Stat.Stamina] * 1
     # fmt: off
     stats[Stat.Critical] += (
         int(stats[Stat.Dexterity] * 0.5) +
         int(stats[Stat.Intelligence] * 0.4) +
-        stats[Stat.Luck] * 0.2
+        multiply(stats[Stat.Luck], 0.2)
     )
     # fmt: on
-    stats[Stat.Haste] += stats[Stat.Wisdom] * 0.3
-    stats[Stat.ItemFind] += stats[Stat.Luck] * 0.4
+    stats[Stat.Haste] += multiply(stats[Stat.Wisdom], 0.3)
+    stats[Stat.ItemFind] += multiply(stats[Stat.Luck], 0.4)
 
 
 class EntityStats(MutableStats):
@@ -105,7 +105,7 @@ class EntityStats(MutableStats):
 
         if id in CONVERTABLE_STATS:
             for gain_id, gain in CONVERTABLE_STATS[id].items():
-                gains[gain_id] += gain * amount
+                gains[gain_id] += multiply(gain, amount)
 
         elif id == Stat.PercentIncreasedDmg:  # Special case
             for key in (Stat.MinDmg, Stat.MaxDmg):

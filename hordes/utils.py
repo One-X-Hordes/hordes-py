@@ -1,4 +1,5 @@
 import math
+from decimal import Decimal
 from typing import Any, Callable, Iterable, Literal, Union, overload
 
 # fmt: off
@@ -156,3 +157,19 @@ def get_attr_or_item(obj: Any, name: Union[str, int]) -> Any:
         return obj[name]
     except Exception as error:
         raise type(error)(f"Failed to get attribute or item '{name}': {error}") from error
+
+
+def multiply(x0: float, x1: float) -> float:
+    """Safe float multiplication to prevent floating point rounding errors.
+
+    Parameters
+    ----------
+    x0 : float
+    x1 : float
+
+    Returns
+    -------
+    float
+        Multiplied float
+    """
+    return float(Decimal(str(x0)) * Decimal(str(x1)))
