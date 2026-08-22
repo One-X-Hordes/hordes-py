@@ -236,7 +236,7 @@ def get_stats(item_type: ItemType, rolls: Union[Rolls, None]) -> dict[int, int]:
     main_stats = list(item_logic['stats'].keys()) if 'stats' in item_logic else []
 
     percent = rolls[0]
-    stat_amount = get_stats_amount(percent)
+    stat_amount = min(get_stats_amount(percent), int((len(rolls) - 1) / 2))
     for i in range(1, stat_amount * 2 + 1, 2):
         roll = rolls[i]
         roll_percent = rolls[i + 1]
