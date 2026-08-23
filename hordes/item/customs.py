@@ -43,8 +43,8 @@ STAT_CODES = {
 
 STAT_IDS = dict([(name, id) for id, names in STAT_CODES.items() for name in names])
 
-ITEM_EXPRESSION = re.compile(r'(?P<type>[A-Za-z]+)(?P<percent>\d+)t(?P<tier>\d+)(?P<stats>(?:[A-Za-z]+\d+\.?\d?){0,4})')
-STAT_EXPRESSION = re.compile(r'(?P<name>[A-Za-z]+)(?P<percent>\d+\.*\d)')
+ITEM_EXPRESSION = re.compile(r'(?P<type>[A-Za-z]+)(?P<percent>\d+)t(?P<tier>\d+)(?P<stats>(?:[A-Za-z]+\d+(?:\.\d)?){0,4})')
+STAT_EXPRESSION = re.compile(r'(?P<name>[A-Za-z]+)(?P<percent>\d+(?:\.\d)?)')
 
 
 def parse_custom_item(input_string: str) -> ParsedCustomItem:
