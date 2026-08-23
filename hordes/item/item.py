@@ -201,7 +201,6 @@ class Item:
             percent=self.percent,
             tier=self.tier,
             stats=self.stats,
-            upgrade=self.upgrade or 0,
         )
 
     def __str__(self) -> str:
